@@ -9,13 +9,19 @@ import kotlinx.coroutines.flow.flowOn
 
 class MovieRepository(private val movieService: MovieService) {
 
-    // API KEY (gunakan API KEY kamu)
-    private val apiKey = "REPLACE_WITH_YOUR_KEY"
+    // API key TMDB (v3)
+    private val apiKey = "YOUR API KEY"
 
-    // fetch movies from the API using Flow
+    // Fetch movies using Flow + sorting
     fun fetchMovies(): Flow<List<Movie>> {
         return flow {
-            emit(movieService.getPopularMovies(apiKey).results)
+            // Ambil data dari API
+            val movies = movieService.getPopularMovies(apiKey).results
+
+            // 🔥 FILTERING DESCENDING POPULARITY
+            val sortedMovies = movies.sortedByDescending { it.popularity }
+
+            emit(sortedMovies)
         }.flowOn(Dispatchers.IO)
     }
 }

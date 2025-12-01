@@ -2,7 +2,6 @@ package com.example.test_lab_week_12
 
 import android.content.Intent
 import android.os.Bundle
-import androidx.activity.ComponentActivity
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
@@ -10,11 +9,8 @@ import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.recyclerview.widget.RecyclerView
 import com.example.test_lab_week_12.viewmodel.MovieViewModel
-import com.example.test_lab_week_12.repository.MovieRepository
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.coroutines.launch
-import androidx.lifecycle.Lifecycle
-
 
 class MainActivity : AppCompatActivity() {
 
@@ -39,7 +35,6 @@ class MainActivity : AppCompatActivity() {
         recyclerView.adapter = movieAdapter
 
         val movieRepository = (application as MovieApplication).movieRepository
-
         val movieViewModel = ViewModelProvider(
             this,
             object : ViewModelProvider.Factory {
@@ -50,18 +45,17 @@ class MainActivity : AppCompatActivity() {
         )[MovieViewModel::class.java]
 
 
-        // FLOW Collector
         lifecycleScope.launch {
-            repeatOnLifecycle(Lifecycle.State.STARTED) {
+            repeatOnLifecycle(androidx.lifecycle.Lifecycle.State.STARTED) {
 
-                // movie collector
+                // Movie collector
                 launch {
                     movieViewModel.popularMovies.collect { movies ->
                         movieAdapter.addMovies(movies)
                     }
                 }
 
-                // error collector
+                // Error collector
                 launch {
                     movieViewModel.error.collect { error ->
                         if (error.isNotEmpty()) {
